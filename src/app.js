@@ -21,8 +21,10 @@ app.use(
 //import the routes
 import healthCheckRouter from "./routes/healthcheck.routes.js";
 import authRoter from "./routes/auth.rout.js";
+import ProjectRouter from "./routes/project.rout.js";
 app.use("/api/v1/healthCheck", healthCheckRouter);
 app.use("/api/v1/auth", authRoter);
+app.use("/api/v1/project", ProjectRouter);
 
 app.get("/", (req, res) => {
   res.send("well come to basecampy");

@@ -20,6 +20,7 @@ import {
   userloginValidator,
 } from "../validators/index.js";
 import { verifyJwt } from "../middleware/auth.middleware.js";
+
 // import { UserloginValidator } from "../validators/index.js";
 const router = Router();
 

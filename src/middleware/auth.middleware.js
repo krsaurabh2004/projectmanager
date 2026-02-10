@@ -1,7 +1,10 @@
 import { User } from "../models/user.models.js";
+import { projectmember } from "../models/projectmember.models.js";
 import ApiError from "../utils/api-Error.js";
 import asyncHandler from "../utils/async-handler.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+import { UserRolesEnum } from "../utils/constants.js";
 
 export const verifyJwt = asyncHandler(async (req, res, next) => {
   //extarct the token
@@ -36,3 +39,35 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
 // 2. access the accesstoken
 // 3. once you access the accessToken decode it and extarct the data
 // 4. onec you have he decoded information inject in req={}
+
+export const validateprojectPermission = (role = []) => {
+  //when ever a person uses this method we recive a roles
+  asyncHandler(async (req, res, next) => {
+    const { projectId } = req.params;
+    if (!projectId) {
+      throw new ApiError(400, "project Id missing");
+    }
+
+    //by this yoy found the projectmember documnet
+    const project = await projectmember.findOne({
+      project: new mongoose.Types.ObjectId(projectId),
+      project: new mongoose.Types.ObjectId(req.user._id),
+    });
+
+    if (!project) {
+      throw new ApiError(400, "project not found");
+    }
+
+    const givenRole = project?.role; //if the project exists take out the rolr from it // there role is taken from the database
+
+    req.user.role = givenRole; //adding given role to the user
+    //check the connection between the proviede role and conncetion role
+    if (!roles.includes(givenRole)) {
+      //this  line sayes is this role is includes in the given role if not it will throw the error
+      throw new ApiError(
+        403,
+        "you do not have permission to perform this action",
+      );
+    }
+  });
+};
